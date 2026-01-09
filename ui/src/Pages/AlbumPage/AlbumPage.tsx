@@ -106,8 +106,12 @@ function AlbumPage() {
         onlyFavorites={onlyFavorites}
         onFavorite={() => (refetchNeededAll = refetchNeededFavorites = true)}
         showFilter
+        showUpload
         setOrdering={orderParams.setOrdering}
         ordering={orderParams}
+        onUploadComplete={() => {
+          refetch()
+        }}
       />
       <PaginateLoader
         active={!finishedLoadingMore && !loading}

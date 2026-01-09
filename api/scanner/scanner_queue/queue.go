@@ -262,3 +262,18 @@ func (queue *ScannerQueue) jobOnQueue(job *ScannerJob) (bool, error) {
 
 	return false, nil
 }
+
+// AddAlbumToQueue adds a single album to the scanner queue.
+// Function does not block.
+func AddAlbumToQueue(album *models.Album) error {
+	albumCache := scanner_cache.MakeAlbumCache()
+
+	global_scanner_queue.mutex.Lock()
+	defer global_scanner_queue.mutex.Unlock()
+
+	global_scanner_queue.addJob(&ScannerJob{
+		ctx: scanner_task.NewTaskContext(context.Background(), global_scanner_queue.db, album, albumCache),
+	})
+
+	return nil
+}

@@ -5,6 +5,7 @@ import MediaGallery, {
 } from '../photoGallery/MediaGallery'
 import AlbumBoxes from './AlbumBoxes'
 import AlbumFilter from '../album/AlbumFilter'
+import UploadMediaButton from '../album/UploadMediaButton'
 import {
   mediaGalleryReducer,
   urlPresentModeSetupHook,
@@ -44,11 +45,13 @@ type AlbumGalleryProps = {
   loading?: boolean
   customAlbumLink?(albumID: string): string
   showFilter?: boolean
+  showUpload?: boolean
   setOnlyFavorites?(favorites: boolean): void
   setOrdering?: SetOrderingFn
   ordering?: MediaOrdering
   onlyFavorites?: boolean
   onFavorite?(): void
+  onUploadComplete?(): void
 }
 
 const AlbumGallery = React.forwardRef(
@@ -58,10 +61,12 @@ const AlbumGallery = React.forwardRef(
       loading = false,
       customAlbumLink,
       showFilter = false,
+      showUpload = false,
       setOnlyFavorites,
       setOrdering,
       ordering,
       onlyFavorites = false,
+      onUploadComplete,
     }: AlbumGalleryProps,
     ref: React.ForwardedRef<HTMLDivElement>
   ) => {
@@ -101,14 +106,22 @@ const AlbumGallery = React.forwardRef(
 
     return (
       <div ref={ref}>
-        {showFilter && (
-          <AlbumFilter
-            onlyFavorites={onlyFavorites}
-            setOnlyFavorites={setOnlyFavorites}
-            setOrdering={setOrdering}
-            ordering={ordering}
-          />
-        )}
+        <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+          {showFilter && (
+            <AlbumFilter
+              onlyFavorites={onlyFavorites}
+              setOnlyFavorites={setOnlyFavorites}
+              setOrdering={setOrdering}
+              ordering={ordering}
+            />
+          )}
+          {showUpload && album && (
+            <UploadMediaButton
+              albumId={album.id}
+              onUploadComplete={onUploadComplete}
+            />
+          )}
+        </div>
         <AlbumTitle album={album} disableLink />
         {subAlbumElement}
         <MediaGallery
